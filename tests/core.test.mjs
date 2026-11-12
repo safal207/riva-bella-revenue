@@ -1,13 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
-import {runInNewContext} from 'node:vm';
-const file = readFileSync(new URL('../src/app.js', import.meta.url), 'utf8');
-const boundary = file.indexOf('const text = {');
-if(boundary < 0) throw Error('Expected extracted economics and fixture section');
-const functions = ['demoMenu','demoPairs','safePrice','validateMenu','contribution','cartAdd','cartRemove','cartTotal','cartCount','recommend','classify','simulateMonthly'];
-const data = runInNewContext(file.slice(0,boundary)+`\n({${functions.join(',')}})`);
-const {demoMenu,demoPairs,validateMenu,contribution,cartAdd,cartRemove,cartTotal,cartCount,recommend,classify,simulateMonthly}=data;
+import {demoMenu,demoPairs} from '../src/menu.js';
+import {validateMenu,contribution,cartAdd,cartRemove,cartTotal,cartCount,recommend,classify,simulateMonthly} from '../src/core.js';
 test('catalog includes clearly identified fictional fixtures',()=>{
   assert.equal(demoMenu.length,8);
   assert.ok(demoMenu.every(p=>Object.values(p.title).every(t=>t.includes('demo')||t.includes('демо'))));

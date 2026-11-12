@@ -10,7 +10,7 @@ This proof of concept reuses the validated interactive prototype and presents th
 
 - Repository: https://github.com/safal207/riva-bella-revenue
 - When GitHub Pages is enabled, the intended preview is https://safal207.github.io/riva-bella-revenue/
-- Source: `index.html`, `styles.css`, `src/app.js`.
+- Source: `index.html`, `styles.css`, `src/app.js`, `src/core.js`, `src/menu.js`, `src/i18n.js`, `src/analytics.js`.
 - CI: `.github/workflows/pages.yml` checks code and tests, builds the `dist` directory, and attempts a Pages deployment on pushes to `main`.
 
 GitHub repository owner should select **Settings → Pages → Build and deployment → Source → GitHub Actions** if Pages is not already configured. A successful CI workflow, not the mere existence of this README, is evidence of deployment.
