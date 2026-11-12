@@ -1,0 +1,23 @@
+name: Catalog validation and regression
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run existing tests and new catalog import tests
+        run: npm run check
+      - name: Verify category manifest and staging catalog
+        run: node scripts/audit-catalog.mjs data/catalog-draft.json
+      - name: Build static artifact without catalog drafts
+        run: npm run build
+      - name: Assert draft data was not copied into Pages build
+        run: test ! -e dist/data/catalog-draft.json && test ! -e dist/data/source-categories.json
