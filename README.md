@@ -9,11 +9,13 @@ This proof of concept reuses the validated interactive prototype and presents th
 ## Demo and deployment
 
 - Repository: https://github.com/safal207/riva-bella-revenue
-- When GitHub Pages is enabled, the intended preview is https://safal207.github.io/riva-bella-revenue/
+- GitHub Pages deployment workflow last confirmed successful on 2026-11-13: https://safal207.github.io/riva-bella-revenue/ (live browser availability requires a separate check)
 - Source: `index.html`, `styles.css`, `src/app.js`, `src/core.js`, `src/menu.js`, `src/i18n.js`, `src/analytics.js`.
 - CI: `.github/workflows/pages.yml` checks code and tests, builds the `dist` directory, and attempts a Pages deployment on pushes to `main`.
 
-GitHub repository owner should select **Settings → Pages → Build and deployment → Source → GitHub Actions** if Pages is not already configured. A successful CI workflow, not the mere existence of this README, is evidence of deployment.
+The GitHub Pages workflow succeeded on 2026-11-13: https://github.com/safal207/riva-bella-revenue/actions/runs/43411462296. Its `deploy-pages` step concluded successfully; HTTP accessibility was not independently verified.
+
+**Migration safety gate:** [Draft PR #5](https://github.com/safal207/riva-bella-revenue/pull/5) adds Feed / Grid / List modes but is not production-ready. It must remain unmerged until the original 176-item menu and images are recovered and checked against the legacy site. See [owner-approved menu migration issue #3](https://github.com/safal207/riva-bella-revenue/issues/3). Do not replace the original catalog with 8 fictional demo items.
 
 ## What's implemented
 
