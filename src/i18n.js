@@ -12,7 +12,10 @@ const text = {
     profitTitle:'Ürün bazında katkı payı', product:'Ürün', quantity:'Örnek adet', contribution:'Birim katkı', group:'Grup',
     star:'Yıldız', workhorse:'Çalışkan', puzzle:'Potansiyel', dog:'Gözden geçir',
     simulator:'Ek satış simülatörü', orders:'Aylık sipariş', attach:'Ek ürün alan siparişler (%)', addonMargin:'Ek ürün katkı payı (₺)', extra:'Aylık ek katkı (₺)',
-    events:'Test olayları', eventNote:'Yalnızca bu tarayıcı oturumunda tutulur; gerçek sipariş değildir.', back:'Menüye dön', testData:'Örnek veriler'
+    events:'Test olayları', eventNote:'Yalnızca bu tarayıcı oturumunda tutulur; gerçek sipariş değildir.', back:'Menüye dön', testData:'Örnek veriler',
+    bundleTitle:'Birlikte daha güzel', bundleSubtitle:'Gününüz için hazırlanmış örnek lezzet eşleşmeleri.',
+    bundleAdd:'Sepete ekle', bundleAdded:'Kombinasyon sepete eklendi', bundleError:'Bu kombinasyon şu anda eklenemiyor',
+    bundleNote:'Bu kombinasyonlar demodur. Fiyat toplamı ürün fiyatlarının toplamıdır, indirim uygulanmaz.', officialMenu:'Gerçek QR menüsünü görüntüle'
   },
   en: {
     demo:'CONCEPT DEMO · PRODUCTS AND PRICES ARE NOT REAL', home:'Menu', owner:'Revenue lab', intro:'Good food, easy choices.', subtitle:'Effortless discovery and thoughtful pairings for every occasion.',
@@ -27,7 +30,10 @@ const text = {
     profitTitle:'Item contribution margin', product:'Product', quantity:'Demo units', contribution:'Unit contribution', group:'Group',
     star:'Star', workhorse:'Workhorse', puzzle:'Puzzle', dog:'Review',
     simulator:'Add-on contribution simulator', orders:'Monthly orders', attach:'Orders with extra item (%)', addonMargin:'Add-on contribution (₺)', extra:'Expected monthly uplift (₺)',
-    events:'Test events', eventNote:'Stored in this browser session only; not actual orders.', back:'Return to menu', testData:'Sample data'
+    events:'Test events', eventNote:'Stored in this browser session only; not actual orders.', back:'Return to menu', testData:'Sample data',
+    bundleTitle:'Better together', bundleSubtitle:'Curated sample pairings for different moments.',
+    bundleAdd:'Add pairing', bundleAdded:'Pairing added to cart', bundleError:'This pairing cannot be added right now',
+    bundleNote:'Demo pairings. The shown total is the sum of product prices, not a promotional discount.', officialMenu:'View original QR menu'
   },
   ru: {
     demo:'КОНЦЕПТ-ДЕМО · БЛЮДА И ЦЕНЫ НЕ ПОДТВЕРЖДЕНЫ', home:'Меню', owner:'Revenue Lab', intro:'Хорошая еда. Лёгкий выбор.', subtitle:'Находите любимые вкусы быстро — с красивой подачей и уместными дополнениями.',
@@ -42,7 +48,10 @@ const text = {
     profitTitle:'Вклад в покрытие расходов по блюдам', product:'Позиция', quantity:'Демо-продажи', contribution:'Вклад с единицы', group:'Группа',
     star:'Звезда', workhorse:'Рабочая лошадка', puzzle:'Потенциал', dog:'Пересмотреть',
     simulator:'Симулятор допродаж', orders:'Заказов в месяц', attach:'Заказов с дополнением (%)', addonMargin:'Вклад от дополнения (₺)', extra:'Дополнительный вклад в месяц (₺)',
-    events:'Тестовые события', eventNote:'Только в этой браузерной сессии; это не реальные заказы.', back:'Вернуться в меню', testData:'Демо-данные'
+    events:'Тестовые события', eventNote:'Только в этой браузерной сессии; это не реальные заказы.', back:'Вернуться в меню', testData:'Демо-данные',
+    bundleTitle:'Вкуснее вместе', bundleSubtitle:'Готовые примеры сочетаний на завтрак, ужин и кофе-брейк.',
+    bundleAdd:'Добавить набор', bundleAdded:'Набор добавлен в корзину', bundleError:'Этот набор сейчас нельзя добавить',
+    bundleNote:'Все наборы демонстрационные. Итог — сумма цен блюд, без вымышленной скидки.', officialMenu:'Открыть оригинальное QR-меню'
   }
 };
 const getLanguage = x => ['tr','ru','en'].includes(x) ? x : 'tr';

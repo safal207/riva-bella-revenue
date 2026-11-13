@@ -1,8 +1,9 @@
 import {demoMenu,demoPairs,categoryIds} from './menu.js';
+import {demoBundles,validateBundles,bundleSummary,addBundle} from './bundles.js';
 import {safePrice,variableCost,contribution,contributionRate,cartCount,cartTotal,cartAdd,cartRemove,validateMenu,recommend,classify,simulateMonthly} from './core.js';
 import {text,getLanguage} from './i18n.js';
 import {track,getEvents} from './analytics.js';
-const issues = validateMenu(demoMenu, demoPairs);
+const issues = [...validateMenu(demoMenu, demoPairs), ...validateBundles(demoBundles,demoMenu)];
 if (issues.length) console.error('Invalid demo menu', issues);
 const app = document.querySelector('#app');
 const menuIndex = new Map(demoMenu.map(item=>[item.id,item]));
@@ -10,7 +11,7 @@ const initialLanguage = (() => {try{return localStorage.getItem('riva-language')
 const state = {
   lang: getLanguage(initialLanguage || (navigator.language||'tr').slice(0,2)),
   cart: loadCart(), category:'all', search:'', view:'menu', drawer:false, detail:null,
-  simulator:{orders:1200, attach:18, margin:90}, impressionIds:new Set()
+  simulator:{orders:1200, attach:18, margin:90}, impressionIds:new Set(), bundleImpressions:new Set()
 };
 
 function loadCart() {
@@ -75,6 +76,30 @@ function hero(){
     <div class="hero-visual" aria-hidden="true"><div class="hero-ring"><div class="hero-plate"><div class="hero-dish">🍽️</div></div></div><div class="hero-glow"></div><div class="floating-card"><span>✦</span> CURATED EXPERIENCE</div></div>
   </div></section>`;
 }
+
+function bundleSection() {
+  const cards=demoBundles.map(bundle=>{
+    const summary=bundleSummary(bundle,demoMenu);
+    if(!summary)return '';
+    const parts=summary.lines.map(({item,quantity})=>quantity+' × '+name(item)).join(' · ');
+    return '<article class="occasion-card" data-bundle-id="'+esc(bundle.id)+'">' +
+      '<div class="occasion-symbol" aria-hidden="true">'+esc(bundle.emoji)+'</div>'+
+      '<h3>'+esc(bundle.title[state.lang])+'</h3>'+
+      '<p>'+esc(bundle.description[state.lang])+'</p>'+
+      '<div class="occasion-parts">'+parts+'</div>'+
+      '<div class="occasion-bottom"><strong>'+money(summary.total)+'</strong>'+
+      '<button class="occasion-add" data-action="add-bundle" data-id="'+esc(bundle.id)+'">'+esc(tr('bundleAdd'))+' ＋</button></div>'+
+      '</article>';
+  }).filter(Boolean).join('');
+  return '<section class="occasion-section" id="occasions">'+
+    '<div class="section-heading"><div><div class="eyebrow">✦ &nbsp; RIVA BELLA / CURATED CHOICES</div>'+
+    '<h2>'+esc(tr('bundleTitle'))+'</h2><p>'+esc(tr('bundleSubtitle'))+'</p></div></div>'+
+    '<div class="occasion-grid">'+cards+'</div>'+
+    '<p class="occasion-note">'+esc(tr('bundleNote'))+
+      ' <a href="https://qrmn.net/rivabella" target="_blank" rel="noopener noreferrer">'+esc(tr('officialMenu'))+' ↗</a></p>'+
+    '</section>';
+}
+
 function categoryButtons(){return categoryIds.map(id=>`<button data-action="category" data-category="${id}" aria-pressed="${state.category===id}" class="category-pill ${state.category===id?'is-selected':''}">${esc(tr(id))}</button>`).join('')}
 function card(item){
   const popularity = item.tags.includes('popular') ? `<span class="item-badge">★ ${esc(tr('testData'))}</span>` : '';
@@ -90,7 +115,7 @@ function card(item){
 }
 function renderMenu(){
   const root=document.querySelector('#main-content');
-  root.innerHTML = `${hero()}
+  root.innerHTML = `${hero()}${bundleSection()}
     <section class="quick-choice" id="quick-choice"><div class="section-heading compact"><div><div class="eyebrow">✦ &nbsp; SIMPLE BY DESIGN</div><h2>${esc(tr('selected'))}</h2><p>${esc(tr('how'))}</p></div></div>
       <div class="quick-options">${categoryIds.filter(x=>x!=='all').slice(0,5).map((id,i)=>`<button class="quick-option quick-${i}" data-action="category" data-category="${id}"><span>${['🍳','🍕','🍔','🍰','☕'][i]}</span><b>${esc(tr(id))}</b><em>↗</em></button>`).join('')}</div>
     </section>
@@ -100,6 +125,22 @@ function renderMenu(){
        <div class="menu-grid" id="menu-grid"></div>
     </section>`;
   renderCards();
+  if('IntersectionObserver' in window){
+    const observer=new IntersectionObserver((entries,obs)=>{
+      for(const entry of entries){
+        if(!entry.isIntersecting)continue;
+        const id=entry.target.dataset.bundleId;
+        if(id&&!state.bundleImpressions.has(id)){
+          track('bundle_impression',{productId:id});
+          state.bundleImpressions.add(id);
+        }
+        obs.unobserve(entry.target);
+      }
+    },{threshold:0.45});
+    document.querySelectorAll('[data-bundle-id]').forEach(node=>{
+      if(!state.bundleImpressions.has(node.dataset.bundleId))observer.observe(node);
+    });
+  }
 }
 function renderCards(){
   if(state.view!=='menu')return;
@@ -179,6 +220,13 @@ function closeIfOpen(){if(state.detail)closeDetail();if(state.drawer)closeCart()
 function changeCategory(category){if(!categoryIds.includes(category))return;state.category=category;state.view='menu';renderCards();track('category_select',{category});document.querySelector('#menu')?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'})}
 function changeLanguage(lang){state.lang=getLanguage(lang);saveLanguage();renderApp()}
 function add(id, source){if(!menuIndex.has(id))return;state.cart=cartAdd(state.cart,id);saveCart();track(source==='suggestion'?'addon_accepted':'add_to_cart',{productId:id});renderCart();toast(tr('added'))}
+function addOccasion(id){
+  const bundle=demoBundles.find(b=>b.id===id);
+  if(!bundle)return;
+  const updated=addBundle(state.cart,bundle,demoMenu);
+  if(!updated){toast(tr('bundleError'));return}
+  state.cart=updated;saveCart();track('bundle_added',{productId:id});renderCart();openCart();toast(tr('bundleAdded'));
+}
 function remove(id){if(!menuIndex.has(id))return;state.cart=cartRemove(state.cart,id);saveCart();track('remove_from_cart',{productId:id});renderCart()}
 async function copyOrder(){
  const lines=demoMenu.filter(item=>state.cart[item.id]>0).map(item=>`${item.title[state.lang]} × ${state.cart[item.id]} — ${money(item.publicPrice*state.cart[item.id])}`);
@@ -195,11 +243,12 @@ document.addEventListener('click',event=>{
   case 'home': showView('menu');break;
   case 'owner': showView(state.view==='owner'?'menu':'owner');break;
   case 'lang': changeLanguage(lang);break;
-  case 'quick': document.querySelector('#quick-choice')?.scrollIntoView({behavior:'smooth'});break;
+  case 'quick': document.querySelector('#occasions')?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});break;
   case 'scroll-menu': document.querySelector('#menu')?.scrollIntoView({behavior:'smooth'});break;
   case 'category': changeCategory(category);break;
   case 'add': add(id);break;
   case 'add-suggestion': add(id,'suggestion');break;
+  case 'add-bundle': addOccasion(id);break;
   case 'remove': remove(id);break;
   case 'open-cart': openCart();break;
   case 'close-cart': closeCart();break;

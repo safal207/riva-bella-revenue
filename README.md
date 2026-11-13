@@ -20,6 +20,9 @@ GitHub repository owner should select **Settings → Pages → Build and deploym
 - Responsive desktop and mobile menu with RU / EN / TR and category quick choices.
 - Local cart with plus/minus actions; basket changes do not rerender the whole menu.
 - Context-sensitive add-on suggestions based on explicit compatible product pairs.
+- Three optional occasion pairings (morning, dinner for two, dessert/coffee), with an itemized full-price total, one-click atomic basket add and no fictitious discount. All bundles use **fictional demo products**.
+- Visible-only, session-scoped pairing impression/acceptance counters; counts are **not** proof of actual sales or conversion uplift.
+- Original Riva Bella QR menu linked as a reference, without silently copying unverifiable photos, prices or ingredients.
 - Pure unit-economics functions and an owner-facing demo contribution simulator.
 - Session-only interaction counters; no remote tracking pixel.
 - Demo order draft can be copied to clipboard. **No orders are submitted, and no payments are charged.**
