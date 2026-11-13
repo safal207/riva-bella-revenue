@@ -1,5 +1,5 @@
 const EVENTS_KEY = 'rb-session-events';
-const allowedEvents = new Set(['menu_view','category_select','product_view','add_to_cart','remove_from_cart','cart_open','addon_impression','addon_accepted','order_draft_copied']);
+const allowedEvents = new Set(['menu_view','category_select','product_view','add_to_cart','remove_from_cart','cart_open','addon_impression','addon_accepted','order_draft_copied','bundle_impression','bundle_added']);
 const clean = v => String(v ?? '').replace(/[^a-zA-Z0-9_\-]/g,'').slice(0,64);
 function track(event, properties={}) {
   if(!allowedEvents.has(event)) return;
