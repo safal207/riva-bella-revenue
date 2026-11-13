@@ -1,5 +1,6 @@
 import {demoMenu,demoPairs,categoryIds} from './menu.js';
 import {demoBundles,validateBundles,bundleSummary,addBundle} from './bundles.js';
+import {MODES,readSavedMode,persistMode,readLikes,persistLikes,productsForView,makeItemLink} from './view-modes.js';
 import {safePrice,variableCost,contribution,contributionRate,cartCount,cartTotal,cartAdd,cartRemove,validateMenu,recommend,classify,simulateMonthly} from './core.js';
 import {text,getLanguage} from './i18n.js';
 import {track,getEvents} from './analytics.js';
@@ -8,8 +9,10 @@ if (issues.length) console.error('Invalid demo menu', issues);
 const app = document.querySelector('#app');
 const menuIndex = new Map(demoMenu.map(item=>[item.id,item]));
 const initialLanguage = (() => {try{return localStorage.getItem('riva-language')}catch{return null}})();
+const availableStorage=(()=>{try{return localStorage}catch{return null}})();
 const state = {
   lang: getLanguage(initialLanguage || (navigator.language||'tr').slice(0,2)),
+  menuView:readSavedMode(availableStorage),savedOnly:false,likes:readLikes(availableStorage,new Set(menuIndex.keys())),
   cart: loadCart(), category:'all', search:'', view:'menu', drawer:false, detail:null,
   simulator:{orders:1200, attach:18, margin:90}, impressionIds:new Set(), bundleImpressions:new Set()
 };
@@ -100,6 +103,40 @@ function bundleSection() {
     '</section>';
 }
 
+
+function modeSwitch(){
+ const buttons=MODES.map(mode=>'<button type="button" data-action="mode" data-mode="'+mode+'" aria-pressed="'+(state.menuView===mode)+'" class="riva-mode '+(state.menuView===mode?'active':'')+'"><span aria-hidden="true">'+({feed:'▤',grid:'▦',list:'≡'})[mode]+'</span> '+esc(tr('mode_'+mode))+'</button>').join('');
+ return '<div class="riva-view-bar"><div class="riva-view-modes" role="group" aria-label="'+esc(tr('viewMode'))+'">'+buttons+'</div><button type="button" class="riva-liked-filter '+(state.savedOnly?'active':'')+'" data-action="saved-only" aria-pressed="'+state.savedOnly+'">♡ '+esc(tr('savedItems'))+' ('+state.likes.size+')</button></div>';
+}
+function likeButton(item){
+ const isLiked=state.likes.has(item.id);
+ return '<button type="button" class="riva-like '+(isLiked?'liked':'')+'" data-action="like" data-id="'+esc(item.id)+'" aria-pressed="'+isLiked+'" aria-label="'+esc(tr(isLiked?'unfavorite':'favorite'))+': '+name(item)+'"><span aria-hidden="true">'+(isLiked?'♥':'♡')+'</span></button>';
+}
+function feedCard(item){
+ return '<article class="riva-post" data-item="'+esc(item.id)+'">'+
+ '<div class="riva-post-header"><span class="riva-post-avatar" aria-hidden="true">RB</span><span><strong>Riva Bella</strong><small>'+esc(tr(item.category))+'</small></span></div>'+
+ '<button class="riva-post-photo" data-action="details" data-id="'+esc(item.id)+'" aria-label="'+esc(tr('view'))+': '+name(item)+'">'+
+ '<img loading="lazy" decoding="async" src="'+esc(item.photo)+'" alt="'+name(item)+'"><span class="riva-photo-fallback" aria-hidden="true">'+esc(item.emoji)+'</span></button>'+
+ '<div class="riva-post-actions">'+likeButton(item)+
+ '<button class="riva-share" data-action="share" data-id="'+esc(item.id)+'" aria-label="'+esc(tr('share'))+': '+name(item)+'">↗</button>'+
+ '<span class="riva-personal-note">'+esc(tr('personalLikesNote'))+'</span></div>'+
+ '<div class="riva-post-info"><h3>'+name(item)+'</h3><p>'+desc(item)+'</p>'+
+ '<div class="riva-post-bottom"><strong>'+money(item.publicPrice)+'</strong>'+
+ '<button class="riva-post-add" data-action="add" data-id="'+esc(item.id)+'">＋ '+esc(tr('add'))+'</button></div></div></article>';
+}
+function compactCard(item){
+ return '<article class="riva-list-row" data-item="'+esc(item.id)+'">'+
+ '<button class="riva-list-photo" data-action="details" data-id="'+esc(item.id)+'" aria-label="'+esc(tr('view'))+': '+name(item)+'"><img loading="lazy" decoding="async" src="'+esc(item.photo)+'" alt=""></button>'+
+ '<div class="riva-list-info"><h3>'+name(item)+'</h3><p>'+desc(item)+'</p><strong>'+money(item.publicPrice)+'</strong></div>'+
+ '<div class="riva-list-actions">'+likeButton(item)+'<button class="riva-list-add" data-action="add" data-id="'+esc(item.id)+'" aria-label="'+esc(tr('add'))+': '+name(item)+'">＋</button></div></article>';
+}
+function gridCard(item){
+ return '<article class="riva-photo-tile" data-item="'+esc(item.id)+'">'+
+ '<button class="riva-tile-photo" data-action="details" data-id="'+esc(item.id)+'" aria-label="'+esc(tr('view'))+': '+name(item)+'"><img loading="lazy" decoding="async" src="'+esc(item.photo)+'" alt=""></button>'+
+ '<div class="riva-tile-caption"><h3>'+name(item)+'</h3><span>'+money(item.publicPrice)+'</span></div>'+
+ '<div class="riva-tile-actions">'+likeButton(item)+'<button data-action="add" data-id="'+esc(item.id)+'" aria-label="'+esc(tr('add'))+': '+name(item)+'">＋ '+esc(tr('add'))+'</button></div></article>';
+}
+
 function categoryButtons(){return categoryIds.map(id=>`<button data-action="category" data-category="${id}" aria-pressed="${state.category===id}" class="category-pill ${state.category===id?'is-selected':''}">${esc(tr(id))}</button>`).join('')}
 function card(item){
   const popularity = item.tags.includes('popular') ? `<span class="item-badge">★ ${esc(tr('testData'))}</span>` : '';
@@ -122,7 +159,7 @@ function renderMenu(){
     <section id="menu" class="menu-section"><div class="section-heading"><div><div class="eyebrow">THE RIVA BELLA SELECTION</div><h2>${esc(tr('menuTitle'))}</h2><p>${esc(tr('menuSubtitle'))}</p></div><div class="menu-count" id="menu-count"></div></div>
        <div class="filters"><div class="categories" aria-label="Categories" id="categories">${categoryButtons()}</div>
        <label class="search-wrap">${icon('⌕')}<input type="search" id="menu-search" placeholder="${esc(tr('search'))}" value="${esc(state.search)}" aria-label="${esc(tr('search'))}"></label></div>
-       <div class="menu-grid" id="menu-grid"></div>
+       ${modeSwitch()}<div class="menu-grid" id="menu-grid"></div>
     </section>`;
   renderCards();
   if('IntersectionObserver' in window){
@@ -144,10 +181,13 @@ function renderMenu(){
 }
 function renderCards(){
   if(state.view!=='menu')return;
-  const q=state.search.toLocaleLowerCase(state.lang).trim();
-  const items=demoMenu.filter(item => item.available && (state.category==='all'||item.category===state.category) &&
-    (!q||Object.values(item.title).some(t=>t.toLocaleLowerCase(state.lang).includes(q))));
-  document.querySelector('#menu-grid').innerHTML=items.length?items.map(card).join(''):`<div class="no-results">${esc(tr('noItems'))}</div>`;
+  const items=productsForView(demoMenu,{category:state.category,search:state.search,language:state.lang,savedOnly:state.savedOnly,likes:state.likes});
+  const grid=document.querySelector('#menu-grid');
+  grid.className='menu-grid riva-view-'+state.menuView;
+  const renderer=state.menuView==='feed'?feedCard:state.menuView==='list'?compactCard:gridCard;
+  grid.innerHTML=items.length?items.map(renderer).join(''):'<div class="no-results">'+esc(tr('noItems'))+'</div>';
+  const controls=document.querySelector('.riva-view-bar');
+  if(controls)controls.outerHTML=modeSwitch();
   document.querySelector('#menu-count').textContent=`${items.length} ${tr('unit')}`;
   document.querySelector('#categories').innerHTML=categoryButtons();
 }
@@ -227,6 +267,29 @@ function addOccasion(id){
   if(!updated){toast(tr('bundleError'));return}
   state.cart=updated;saveCart();track('bundle_added',{productId:id});renderCart();openCart();toast(tr('bundleAdded'));
 }
+function setMenuMode(mode){
+ if(!MODES.includes(mode))return;
+ state.menuView=mode;persistMode(availableStorage,mode);track('view_mode_change',{category:mode});renderCards();
+}
+function toggleFavorite(id){
+ if(!menuIndex.has(id))return;
+ if(state.likes.has(id))state.likes.delete(id);else state.likes.add(id);
+ persistLikes(availableStorage,state.likes);track('favorite_toggle',{productId:id});renderCards();
+}
+async function shareProduct(id){
+ const item=menuIndex.get(id);if(!item)return;
+ const link=makeItemLink(location.href,id,state.lang);
+ if(navigator.share){
+   try{await navigator.share({title:item.title[state.lang],url:link});track('product_share',{productId:id});return;}
+   catch(err){if(err?.name==='AbortError')return;}
+ }
+ try{await navigator.clipboard.writeText(link);track('product_share',{productId:id});toast(tr('linkCopied'))}
+ catch{
+   const value=window.prompt(tr('copyShareLink'),link);
+   if(value!==null)track('product_share_fallback',{productId:id});
+ }
+}
+
 function remove(id){if(!menuIndex.has(id))return;state.cart=cartRemove(state.cart,id);saveCart();track('remove_from_cart',{productId:id});renderCart()}
 async function copyOrder(){
  const lines=demoMenu.filter(item=>state.cart[item.id]>0).map(item=>`${item.title[state.lang]} × ${state.cart[item.id]} — ${money(item.publicPrice*state.cart[item.id])}`);
@@ -248,6 +311,10 @@ document.addEventListener('click',event=>{
   case 'category': changeCategory(category);break;
   case 'add': add(id);break;
   case 'add-suggestion': add(id,'suggestion');break;
+  case 'mode': setMenuMode(button.dataset.mode);break;
+  case 'saved-only': state.savedOnly=!state.savedOnly;renderCards();break;
+  case 'like': toggleFavorite(id);break;
+  case 'share': shareProduct(id);break;
   case 'add-bundle': addOccasion(id);break;
   case 'remove': remove(id);break;
   case 'open-cart': openCart();break;
@@ -263,3 +330,11 @@ document.addEventListener('input',event=>{
 });
 document.addEventListener('keydown',event=>{if(event.key==='Escape'){if(state.detail)closeDetail();else if(state.drawer)closeCart()}});
 track('menu_view');renderApp();
+const requestedParams=new URLSearchParams(location.search);
+const requestedItem=requestedParams.get('item');
+if(requestedItem&&menuIndex.has(requestedItem)){
+ const wantedLanguage=requestedParams.get('lang');
+ if(['tr','ru','en'].includes(wantedLanguage)&&state.lang!==wantedLanguage)changeLanguage(wantedLanguage);
+ openDetail(requestedItem);
+}
+

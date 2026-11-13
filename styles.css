@@ -25,3 +25,80 @@
 @media(max-width:780px){.occasion-section{padding-left:20px;padding-right:20px}}
 @media(max-width:500px){.occasion-section{padding:40px 15px 22px}.occasion-grid{grid-template-columns:1fr;gap:11px}.occasion-card:last-child{grid-column:auto}.occasion-card{padding:18px;min-height:0;gap:9px}.occasion-card h3{font-size:22px}.occasion-bottom{padding-top:11px}.occasion-add{min-height:44px}}
 @media(prefers-reduced-motion:reduce){.occasion-card{transition:none}}
+
+
+/* 3 views, one source of truth. The feed is a visual catalog, not public social-media metrics. */
+.riva-view-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:16px 0 24px;position:sticky;top:80px;z-index:10;padding:9px 0;background:#f8f6f1ef;backdrop-filter:blur(12px)}
+.riva-view-modes{display:flex;align-items:center;gap:5px;padding:5px;background:#e8ece6;border-radius:999px}
+.riva-mode{border:0;background:transparent;padding:10px 15px;min-height:44px;color:#536c60;border-radius:999px;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:750;white-space:nowrap}
+.riva-mode.active{background:#193a32;color:#fff;box-shadow:0 3px 9px #173a321a}
+.riva-mode span{font-size:19px;font-weight:500}
+.riva-liked-filter{border:1px solid #cbd6ca;background:#fffdf9;border-radius:999px;color:#4a685b;min-height:44px;padding:9px 16px;font-size:12px;font-weight:700;white-space:nowrap}
+.riva-liked-filter.active{background:#193a32;color:white}
+.menu-grid.riva-view-feed{display:block;max-width:480px;width:100%;margin:0 auto}
+.riva-post{min-width:0;overflow:hidden;background:#fff;border:1px solid #e8e5df;border-radius:20px;margin-bottom:24px;box-shadow:0 9px 28px #172a2210}
+.riva-post-header{padding:14px 17px;display:flex;align-items:center;gap:11px;font-size:13px;color:#234b3e}
+.riva-post-header strong{display:block;font-size:13px;font-weight:800}
+.riva-post-header small{display:block;font-size:11px;color:#7c877f;margin-top:3px}
+.riva-post-avatar{display:grid;place-items:center;border:1px solid #c7a46b;border-radius:50%;height:39px;width:39px;color:#917147;background:#f5ecdc;font-family:Georgia,serif;font-size:13px;font-weight:bold}
+.riva-post-photo{width:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;border:0;padding:0;position:relative;overflow:hidden;background:#edeae4;cursor:zoom-in}
+.riva-post-photo img{width:100%;height:100%;object-fit:contain;position:relative;z-index:1}
+.riva-photo-fallback{position:absolute;inset:0;display:grid;place-items:center;font-size:85px;opacity:.25}
+.riva-post-actions{padding:12px 17px 0;display:flex;align-items:center;gap:6px}
+.riva-like,.riva-share{min-width:44px;min-height:44px;display:grid;place-items:center;background:none;border:0;border-radius:50%;font-size:29px;color:#3a5547;line-height:1}
+.riva-like.liked{color:#bd5260}
+.riva-share{font-size:26px}
+.riva-personal-note{margin-left:auto;text-align:right;max-width:185px;font-size:10px;color:#8b938e;line-height:1.4}
+.riva-post-info{padding:6px 20px 20px}
+.riva-post-info h3{font-family:Georgia,serif;font-weight:500;font-size:23px;margin:5px 0 7px;color:#1d4639;line-height:1.2}
+.riva-post-info p{font-size:12px;line-height:1.7;color:#627368;margin-bottom:15px}
+.riva-post-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:13px;border-top:1px solid #ecede7}
+.riva-post-bottom strong{font-size:20px;color:#244c3f}
+.riva-post-add,.riva-list-add,.riva-tile-actions>button:last-child{border:0;background:#1c4137;color:white;border-radius:999px;padding:12px 18px;min-height:44px;font-size:13px;font-weight:750}
+.menu-grid.riva-view-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.riva-photo-tile{min-width:0;overflow:hidden;border:1px solid #e5e7df;border-radius:15px;background:#fff}
+.riva-tile-photo{display:block;width:100%;aspect-ratio:1/1;padding:0;border:0;background:#f1eee8;overflow:hidden}
+.riva-tile-photo img{width:100%;height:100%;object-fit:contain}
+.riva-tile-caption{padding:12px 13px 2px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;justify-content:space-between}
+.riva-tile-caption h3{font-size:14px;margin:0;color:#244b3c;flex:1 1 100%}
+.riva-tile-caption span{color:#9d7a53;font-size:14px;font-weight:800}
+.riva-tile-actions{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:3px 12px 12px}
+.riva-tile-actions>button:last-child{padding:8px 12px;font-size:11px}
+.menu-grid.riva-view-list{display:grid;grid-template-columns:1fr;gap:9px;max-width:1000px}
+.riva-list-row{display:flex;align-items:center;gap:14px;background:white;border-radius:14px;padding:11px;border:1px solid #eae7e0;min-width:0}
+.riva-list-photo{width:94px;height:94px;flex:0 0 94px;display:block;overflow:hidden;border-radius:10px;padding:0;border:0;background:#f1ede5}
+.riva-list-photo img{width:100%;height:100%;object-fit:cover}
+.riva-list-info{flex:1 1 auto;min-width:0}
+.riva-list-info h3{font-size:16px;font-weight:750;color:#1c4838;margin:0 0 5px}
+.riva-list-info p{font-size:11px;line-height:1.4;color:#728178;margin:0 0 6px}
+.riva-list-info strong{font-size:14px;color:#a07752}
+.riva-list-actions{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.riva-list-add{width:44px;padding:0;font-size:21px}
+.riva-view-bar button:focus-visible,.riva-post button:focus-visible,.riva-photo-tile button:focus-visible,.riva-list-row button:focus-visible{outline:3px solid #c89d68;outline-offset:2px}
+@media(max-width:900px){.menu-grid.riva-view-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:780px){.riva-view-bar{top:69px}}
+@media(max-width:500px){
+.riva-view-bar{top:64px;gap:7px;margin:10px 0 15px;padding:9px 0;align-items:stretch}
+.riva-view-modes{flex:1;justify-content:space-between;gap:0}
+.riva-mode{flex:1;justify-content:center;gap:4px;padding:9px 7px;font-size:11px}
+.riva-mode span{font-size:16px}
+.riva-liked-filter{align-self:center;min-height:44px;padding:9px 12px;font-size:11px}
+.riva-post{border-radius:12px;margin:0 -5px 17px}
+.riva-post-info{padding:4px 15px 16px}
+.riva-post-info h3{font-size:21px}
+.riva-post-header{padding:10px 13px}
+.riva-post-photo{aspect-ratio:1/1}
+.riva-personal-note{font-size:9px}
+.menu-grid.riva-view-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.riva-tile-caption{padding:8px 9px 0}
+.riva-tile-caption h3{font-size:12px}
+.riva-tile-actions{padding:2px 7px 8px;gap:2px}
+.riva-tile-actions>button:last-child{font-size:10px;padding:8px 9px;min-height:44px}
+.riva-list-row{gap:10px;padding:8px}
+.riva-list-photo{width:74px;height:74px;flex-basis:74px}
+.riva-list-info h3{font-size:13px}
+.riva-list-info p{font-size:10px}
+.riva-list-actions{gap:0}
+.riva-list-actions .riva-like{min-width:38px;width:38px}
+.riva-list-add{width:40px;min-height:44px}
+}
