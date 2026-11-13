@@ -82,7 +82,7 @@ function bundleSection() {
     const summary=bundleSummary(bundle,demoMenu);
     if(!summary)return '';
     const parts=summary.lines.map(({item,quantity})=>quantity+' × '+name(item)).join(' · ');
-    return '<article class="occasion-card">' +
+    return '<article class="occasion-card" data-bundle-id="'+esc(bundle.id)+'">' +
       '<div class="occasion-symbol" aria-hidden="true">'+esc(bundle.emoji)+'</div>'+
       '<h3>'+esc(bundle.title[state.lang])+'</h3>'+
       '<p>'+esc(bundle.description[state.lang])+'</p>'+
@@ -125,7 +125,22 @@ function renderMenu(){
        <div class="menu-grid" id="menu-grid"></div>
     </section>`;
   renderCards();
-  for(const bundle of demoBundles)if(!state.bundleImpressions.has(bundle.id)&&bundleSummary(bundle,demoMenu)){track('bundle_impression',{productId:bundle.id});state.bundleImpressions.add(bundle.id)}
+  if('IntersectionObserver' in window){
+    const observer=new IntersectionObserver((entries,obs)=>{
+      for(const entry of entries){
+        if(!entry.isIntersecting)continue;
+        const id=entry.target.dataset.bundleId;
+        if(id&&!state.bundleImpressions.has(id)){
+          track('bundle_impression',{productId:id});
+          state.bundleImpressions.add(id);
+        }
+        obs.unobserve(entry.target);
+      }
+    },{threshold:0.45});
+    document.querySelectorAll('[data-bundle-id]').forEach(node=>{
+      if(!state.bundleImpressions.has(node.dataset.bundleId))observer.observe(node);
+    });
+  }
 }
 function renderCards(){
   if(state.view!=='menu')return;
@@ -210,7 +225,7 @@ function addOccasion(id){
   if(!bundle)return;
   const updated=addBundle(state.cart,bundle,demoMenu);
   if(!updated){toast(tr('bundleError'));return}
-  state.cart=updated;saveCart();track('bundle_added',{productId:id});renderCart();toast(tr('bundleAdded'));
+  state.cart=updated;saveCart();track('bundle_added',{productId:id});renderCart();openCart();toast(tr('bundleAdded'));
 }
 function remove(id){if(!menuIndex.has(id))return;state.cart=cartRemove(state.cart,id);saveCart();track('remove_from_cart',{productId:id});renderCart()}
 async function copyOrder(){
@@ -228,7 +243,7 @@ document.addEventListener('click',event=>{
   case 'home': showView('menu');break;
   case 'owner': showView(state.view==='owner'?'menu':'owner');break;
   case 'lang': changeLanguage(lang);break;
-  case 'quick': document.querySelector('#quick-choice')?.scrollIntoView({behavior:'smooth'});break;
+  case 'quick': document.querySelector('#occasions')?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});break;
   case 'scroll-menu': document.querySelector('#menu')?.scrollIntoView({behavior:'smooth'});break;
   case 'category': changeCategory(category);break;
   case 'add': add(id);break;
