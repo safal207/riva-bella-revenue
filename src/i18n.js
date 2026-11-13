@@ -13,6 +13,9 @@ const text = {
     star:'Yıldız', workhorse:'Çalışkan', puzzle:'Potansiyel', dog:'Gözden geçir',
     simulator:'Ek satış simülatörü', orders:'Aylık sipariş', attach:'Ek ürün alan siparişler (%)', addonMargin:'Ek ürün katkı payı (₺)', extra:'Aylık ek katkı (₺)',
     events:'Test olayları', eventNote:'Yalnızca bu tarayıcı oturumunda tutulur; gerçek sipariş değildir.', back:'Menüye dön', testData:'Örnek veriler',
+    viewMode:'Menü görünümü',mode_feed:'Akış',mode_grid:'Fotoğraflar',mode_list:'Liste',savedItems:'Favorilerim',
+    favorite:'Favorilere ekle',unfavorite:'Favorilerden kaldır',share:'Paylaş',linkCopied:'Ürün bağlantısı kopyalandı',
+    copyShareLink:'Bağlantıyı kopyalayın',personalLikesNote:'Beğeni sadece bu cihazda saklanır',
     bundleTitle:'Birlikte daha güzel', bundleSubtitle:'Gününüz için hazırlanmış örnek lezzet eşleşmeleri.',
     bundleAdd:'Sepete ekle', bundleAdded:'Kombinasyon sepete eklendi', bundleError:'Bu kombinasyon şu anda eklenemiyor',
     bundleNote:'Bu kombinasyonlar demodur. Fiyat toplamı ürün fiyatlarının toplamıdır, indirim uygulanmaz.', officialMenu:'Gerçek QR menüsünü görüntüle'
@@ -31,6 +34,9 @@ const text = {
     star:'Star', workhorse:'Workhorse', puzzle:'Puzzle', dog:'Review',
     simulator:'Add-on contribution simulator', orders:'Monthly orders', attach:'Orders with extra item (%)', addonMargin:'Add-on contribution (₺)', extra:'Expected monthly uplift (₺)',
     events:'Test events', eventNote:'Stored in this browser session only; not actual orders.', back:'Return to menu', testData:'Sample data',
+    viewMode:'Menu view',mode_feed:'Feed',mode_grid:'Photos',mode_list:'List',savedItems:'Saved',
+    favorite:'Save item',unfavorite:'Remove from saved',share:'Share',linkCopied:'Product link copied',
+    copyShareLink:'Copy this product link',personalLikesNote:'Saved on this device only',
     bundleTitle:'Better together', bundleSubtitle:'Curated sample pairings for different moments.',
     bundleAdd:'Add pairing', bundleAdded:'Pairing added to cart', bundleError:'This pairing cannot be added right now',
     bundleNote:'Demo pairings. The shown total is the sum of product prices, not a promotional discount.', officialMenu:'View original QR menu'
@@ -49,6 +55,9 @@ const text = {
     star:'Звезда', workhorse:'Рабочая лошадка', puzzle:'Потенциал', dog:'Пересмотреть',
     simulator:'Симулятор допродаж', orders:'Заказов в месяц', attach:'Заказов с дополнением (%)', addonMargin:'Вклад от дополнения (₺)', extra:'Дополнительный вклад в месяц (₺)',
     events:'Тестовые события', eventNote:'Только в этой браузерной сессии; это не реальные заказы.', back:'Вернуться в меню', testData:'Демо-данные',
+    viewMode:'Вид меню',mode_feed:'Лента',mode_grid:'Плитка',mode_list:'Список',savedItems:'Избранное',
+    favorite:'В избранное',unfavorite:'Убрать из избранного',share:'Поделиться',linkCopied:'Ссылка на блюдо скопирована',
+    copyShareLink:'Скопируйте ссылку на блюдо',personalLikesNote:'Нравится только вам, на этом устройстве',
     bundleTitle:'Вкуснее вместе', bundleSubtitle:'Готовые примеры сочетаний на завтрак, ужин и кофе-брейк.',
     bundleAdd:'Добавить набор', bundleAdded:'Набор добавлен в корзину', bundleError:'Этот набор сейчас нельзя добавить',
     bundleNote:'Все наборы демонстрационные. Итог — сумма цен блюд, без вымышленной скидки.', officialMenu:'Открыть оригинальное QR-меню'
