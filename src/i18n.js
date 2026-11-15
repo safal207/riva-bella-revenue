@@ -11,7 +11,7 @@ const text = {
     gross:'Sepet tutarı (demo)', products:'Örnek ürünler', experiments:'Bu oturumdaki etkileşimler', demoInsight:'Aşağıdaki değerler sadece örnek menüye aittir.',
     profitTitle:'Ürün bazında katkı payı', product:'Ürün', quantity:'Örnek adet', contribution:'Birim katkı', group:'Grup',
     star:'Yıldız', workhorse:'Çalışkan', puzzle:'Potansiyel', dog:'Gözden geçir',
-    simulator:'Ek satış simülatörü', orders:'Aylık sipariş', attach:'Ek ürün alan siparişler (%)', addonMargin:'Ek ürün katkı payı (₺)', extra:'Aylık ek katkı (₺)',
+    simulator:'Ek satış simülatörü', orders:'Aylık sipariş', baseline:'Kontrol grubunda ek ürün oranı (%)', attach:'Test grubunda ek ürün oranı (%)', addonMargin:'Ek ürün katkı payı (₺)', extra:'Tahmini aylık katkı farkı (₺)', simNote:'Örnek senaryo; diğer ürünlerin yerini alma, indirim ve sabit giderler dahil değildir. Nedensel etki kanıtı değildir.', removeOne:'Bir adet çıkar', addOne:'Bir adet ekle',
     events:'Test olayları', eventNote:'Yalnızca bu tarayıcı oturumunda tutulur; gerçek sipariş değildir.', back:'Menüye dön', testData:'Örnek veriler',
     bundleTitle:'Birlikte daha güzel', bundleSubtitle:'Gününüz için hazırlanmış örnek lezzet eşleşmeleri.',
     bundleAdd:'Sepete ekle', bundleAdded:'Kombinasyon sepete eklendi', bundleError:'Bu kombinasyon şu anda eklenemiyor',
@@ -29,7 +29,7 @@ const text = {
     gross:'Demo cart value', products:'Sample items', experiments:'This session’s interactions', demoInsight:'Values below are based only on sample menu data.',
     profitTitle:'Item contribution margin', product:'Product', quantity:'Demo units', contribution:'Unit contribution', group:'Group',
     star:'Star', workhorse:'Workhorse', puzzle:'Puzzle', dog:'Review',
-    simulator:'Add-on contribution simulator', orders:'Monthly orders', attach:'Orders with extra item (%)', addonMargin:'Add-on contribution (₺)', extra:'Expected monthly uplift (₺)',
+    simulator:'Add-on contribution simulator', orders:'Monthly orders', baseline:'Control add-on rate (%)', attach:'Test add-on rate (%)', addonMargin:'Add-on contribution (₺)', extra:'Estimated monthly contribution difference (₺)', simNote:'Illustrative scenario; excludes substitution, discounts and fixed costs. This is not proof of causal impact.', removeOne:'Remove one', addOne:'Add one',
     events:'Test events', eventNote:'Stored in this browser session only; not actual orders.', back:'Return to menu', testData:'Sample data',
     bundleTitle:'Better together', bundleSubtitle:'Curated sample pairings for different moments.',
     bundleAdd:'Add pairing', bundleAdded:'Pairing added to cart', bundleError:'This pairing cannot be added right now',
@@ -47,7 +47,7 @@ const text = {
     gross:'Стоимость корзины (демо)', products:'Демо-позиции', experiments:'Действия за сессию', demoInsight:'Расчёты ниже основаны только на примерных данных.',
     profitTitle:'Вклад в покрытие расходов по блюдам', product:'Позиция', quantity:'Демо-продажи', contribution:'Вклад с единицы', group:'Группа',
     star:'Звезда', workhorse:'Рабочая лошадка', puzzle:'Потенциал', dog:'Пересмотреть',
-    simulator:'Симулятор допродаж', orders:'Заказов в месяц', attach:'Заказов с дополнением (%)', addonMargin:'Вклад от дополнения (₺)', extra:'Дополнительный вклад в месяц (₺)',
+    simulator:'Симулятор допродаж', orders:'Заказов в месяц', baseline:'Дополнение в контрольной группе (%)', attach:'Дополнение в тестовой группе (%)', addonMargin:'Вклад от дополнения (₺)', extra:'Оценка разницы вклада за месяц (₺)', simNote:'Условный сценарий: замещение других блюд, скидки и постоянные расходы не учтены. Это не доказательство влияния.', removeOne:'Убрать одну порцию', addOne:'Добавить одну порцию',
     events:'Тестовые события', eventNote:'Только в этой браузерной сессии; это не реальные заказы.', back:'Вернуться в меню', testData:'Демо-данные',
     bundleTitle:'Вкуснее вместе', bundleSubtitle:'Готовые примеры сочетаний на завтрак, ужин и кофе-брейк.',
     bundleAdd:'Добавить набор', bundleAdded:'Набор добавлен в корзину', bundleError:'Этот набор сейчас нельзя добавить',
@@ -58,3 +58,4 @@ const getLanguage = x => ['tr','ru','en'].includes(x) ? x : 'tr';
 
 
 export {text,getLanguage};
+
