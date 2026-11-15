@@ -11,7 +11,7 @@ const initialLanguage = (() => {try{return localStorage.getItem('riva-language')
 const state = {
   lang: getLanguage(initialLanguage || (navigator.language||'tr').slice(0,2)),
   cart: loadCart(), category:'all', search:'', view:'menu', drawer:false, detail:null,
-  simulator:{orders:1200, attach:18, margin:90}, impressionIds:new Set(), bundleImpressions:new Set()
+  simulator:{orders:1200, baseline:15, attach:18, margin:90}, impressionIds:new Set(), bundleImpressions:new Set()
 };
 
 function loadCart() {
@@ -166,9 +166,10 @@ function ownerView(){
       <section class="dashboard-section"><div class="section-heading compact"><div><div class="eyebrow">SCENARIO MODEL</div><h2>${esc(tr('simulator'))}</h2><p>${esc(tr('demoInsight'))}</p></div></div>
         <div class="simulator"><div class="simulator-controls">
           ${slider('orders',tr('orders'),200,5000,100,state.simulator.orders)}
-          ${slider('attach',tr('attach'),0,50,1,state.simulator.attach)}
+          ${slider('baseline',tr('baseline'),0,100,1,state.simulator.baseline)}
+          ${slider('attach',tr('attach'),0,100,1,state.simulator.attach)}
           ${slider('margin',tr('addonMargin'),10,300,5,state.simulator.margin)}
-          </div><div class="simulator-result"><span>${esc(tr('extra'))}</span><strong id="uplift-value"></strong><small>${esc(tr('demoInsight'))}</small></div></div>
+          </div><div class="simulator-result"><span>${esc(tr('extra'))}</span><strong id="uplift-value"></strong><small>${esc(tr('simNote'))}</small></div></div>
       </section>
       <section class="dashboard-section"><div class="section-heading compact"><div><div class="eyebrow">SESSION INSTRUMENTATION</div><h2>${esc(tr('events'))}</h2><p>${esc(tr('eventNote'))}</p></div></div>
         <div class="event-grid">${counts.length?counts.map(([k,v])=>`<div class="event-item"><span>${esc(k)}</span><strong>${v}</strong></div>`).join(''):'<div class="empty-events">—</div>'}</div>
@@ -178,9 +179,9 @@ function ownerView(){
 function slider(id,label,min,max,step,value){return `<label class="slider-row"><span class="slider-label"><span>${esc(label)}</span><strong data-slider-value="${id}">${decimal(value)}</strong></span><input type="range" data-slider="${id}" min="${min}" max="${max}" step="${step}" value="${value}"></label>`}
 function updateSimulator(){
   const sim=state.simulator;
-  const out=simulateMonthly(sim.orders,sim.attach,sim.margin);
+  const out=simulateMonthly(sim.orders,sim.attach,sim.margin,sim.baseline);
   const dest=document.querySelector('#uplift-value'); if(dest)dest.textContent=money(out.contribution);
-  for(const id of ['orders','attach','margin']){const e=document.querySelector(`[data-slider-value="${id}"]`);if(e)e.textContent=decimal(sim[id])+(id==='attach'?'%':id==='margin'?' ₺':'')}
+  for(const id of ['orders','baseline','attach','margin']){const e=document.querySelector(`[data-slider-value="${id}"]`);if(e)e.textContent=decimal(sim[id])+(id==='attach'||id==='baseline'?'%':id==='margin'?' ₺':'')}
 }
 function renderCart(){
   const content=document.querySelector('#cart-content'); if(!content)return;
@@ -188,7 +189,7 @@ function renderCart(){
   const suggestions=recommend(state.cart,demoMenu,demoPairs);
   content.innerHTML = `${selected.length?`<div class="cart-items">${selected.map(item=>`<div class="cart-item">
     <div class="cart-item-thumb">${esc(item.emoji)}</div><div class="cart-item-info"><h3>${name(item)}</h3><span>${money(item.publicPrice)}</span></div>
-    <div class="quantity"><button data-action="remove" data-id="${esc(item.id)}" aria-label="Remove one ${name(item)}">−</button><output>${state.cart[item.id]}</output><button data-action="add" data-id="${esc(item.id)}" aria-label="Add one ${name(item)}">＋</button></div>
+    <div class="quantity"><button data-action="remove" data-id="${esc(item.id)}" aria-label="${esc(tr('removeOne'))}: ${name(item)}">−</button><output>${state.cart[item.id]}</output><button data-action="add" data-id="${esc(item.id)}" aria-label="${esc(tr('addOne'))}: ${name(item)}">＋</button></div>
     </div>`).join('')}</div>`:`<div class="empty-cart"><span>♧</span><h3>${esc(tr('noItems'))}</h3><p>${esc(tr('how'))}</p></div>`}
     ${suggestions.length?`<section class="recommendation"><div class="eyebrow">✧ ${esc(tr('suggested'))}</div><h3>${esc(tr('matches'))}</h3>
       ${suggestions.map(({item})=>`<div class="suggestion-row"><span class="suggestion-image">${esc(item.emoji)}</span><div><strong>${name(item)}</strong><small>${money(item.publicPrice)}</small></div><button data-action="add-suggestion" data-id="${esc(item.id)}" aria-label="${esc(tr('add'))}: ${name(item)}">+</button></div>`).join('')}
@@ -243,7 +244,7 @@ document.addEventListener('click',event=>{
   case 'home': showView('menu');break;
   case 'owner': showView(state.view==='owner'?'menu':'owner');break;
   case 'lang': changeLanguage(lang);break;
-  case 'quick': document.querySelector('#occasions')?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});break;
+  case 'quick': document.querySelector('#quick-choice')?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});break;
   case 'scroll-menu': document.querySelector('#menu')?.scrollIntoView({behavior:'smooth'});break;
   case 'category': changeCategory(category);break;
   case 'add': add(id);break;
@@ -263,3 +264,4 @@ document.addEventListener('input',event=>{
 });
 document.addEventListener('keydown',event=>{if(event.key==='Escape'){if(state.detail)closeDetail();else if(state.drawer)closeCart()}});
 track('menu_view');renderApp();
+
