@@ -30,8 +30,12 @@ test('contribution is net revenue minus variable costs, not net profit',()=>{
 });
 test('monthly simulator computes incremental contribution',()=>{
   const result=simulateMonthly(1200,18,90);assert.equal(result.addOns,216);assert.equal(result.contribution,19440);
+  assert.equal(simulateMonthly(1200,18,90,15).contribution,3240);
+  assert.equal(simulateMonthly(100,10,100,20).contribution,-1000);
+  assert.equal(simulateMonthly(100,20,100,20).contribution,0);
 });
 test('group classifier assigns recognized menu engineering groups',()=>{
   assert.equal(classify(demoMenu).length,demoMenu.length);
   assert.ok(classify(demoMenu).every(x=>['star','workhorse','puzzle','dog'].includes(x.group)));
 });
+

@@ -46,7 +46,7 @@ For local preview after build you can serve the repository with any static file 
 
 Per-item contribution = **sales revenue excluding sales tax − directly variable costs**. The current figures are invented teaching examples. Contribution is **not net profit** because rent, staffing, utilities, equipment and other fixed overhead are excluded.
 
-The simulator models `orders × attach rate × incremental unit contribution`. It does not account for cannibalization, changes in purchase behavior, capacity, seasonality, or fixed costs. No ROI claim is made.
+The simulator models `orders × (test attach rate − control attach rate) × unit contribution`. It is an illustrative estimate, not proof of causal uplift. It does not account for cannibalization, changes in purchase behavior, capacity, seasonality, discounts, or fixed costs. No ROI claim is made.
 
 ## Next gates before use by a real restaurant
 

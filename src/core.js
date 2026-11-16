@@ -44,11 +44,13 @@ function classify(menu) {
       group: popular ? (profitable?'star':'workhorse') : (profitable?'puzzle':'dog')};
   });
 }
-/** Expected incremental contribution before increased fixed costs, cannibalization etc. */
-function simulateMonthly(orders, attachPercent, addonContribution) {
-  const o = safePrice(orders), p = Math.max(0,Math.min(100,safePrice(attachPercent)))/100;
-  return {addOns: o*p, contribution: o*p*safePrice(addonContribution)};
+/** Estimated difference against a control rate; not net profit or a causal result. */
+function simulateMonthly(orders, attachPercent, addonContribution, baselinePercent = 0) {
+  const o = safePrice(orders), p = Math.max(0,Math.min(100,safePrice(attachPercent)));
+  const baseline = Math.max(0,Math.min(100,safePrice(baselinePercent)));
+  return {addOns: o*p/100, contribution: o*(p-baseline)/100*safePrice(addonContribution)};
 }
 
 
 export {safePrice,variableCost,contribution,contributionRate,cartCount,cartTotal,cartAdd,cartRemove,validateMenu,recommend,classify,simulateMonthly};
+
